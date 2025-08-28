@@ -1,0 +1,9 @@
+/vendor/
+/config/
+.env
+/.idea
+/.vscode
+/node_modules
+/public/uploads
+composer.lock
+composer.json
