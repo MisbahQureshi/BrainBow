@@ -194,6 +194,22 @@ ob_start();
       <?= $counts['events_today'] ?></div>
   </div>
 </div>
+
+<?php if (($_SESSION['role'] ?? '') !== 'admin'): ?>
+  <div class="card" style="border-color:#f87171">
+    <h3 style="color:#f87171">Danger zone</h3>
+    <p class="muted">
+      Once you delete your account, all your projects, notes, to-dos, and mind maps will be permanently removed.
+    </p>
+    <form action="index.php?route=user.delete" method="POST"
+      onsubmit="return confirm('Are you sure you want to permanently delete your account? This action cannot be undone.');">
+      <button type="submit" class="btn" style="background:linear-gradient(180deg,#dc2626,#b91c1c);box-shadow:none;">
+        Delete My Account
+      </button>
+    </form>
+  </div>
+<?php endif; ?>
+
 <?php
 $content = ob_get_clean();
 

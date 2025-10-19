@@ -94,6 +94,10 @@ switch ($route) {
         require __DIR__ . '/../app/Controllers/ProjectsController.php';
         break;
 
+    case 'user.delete':
+        require __DIR__ . '/../app/Controllers/AccountController.php';
+        break;
+
 
     default:
         http_response_code(404);
