@@ -73,10 +73,38 @@ if ($route === 'projects.new') {
   exit;
 }
 
+/** DELETE PROJECT */
+if ($route === 'projects.delete') {
+  $id = (int)($_GET['id'] ?? 0);
+  $p = ensure_project_owner($pdo, $id, $uid); // verify ownership
+
+  if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $stmt = $pdo->prepare("DELETE FROM projects WHERE id=? AND owner_id=?");
+    $stmt->execute([$id, $uid]);
+    header('Location: index.php?route=dashboard');
+    exit;
+  }
+
+  $projects = fetch_sidebar_projects($pdo, $uid);
+  ob_start(); ?>
+  <h2>Delete Project</h2>
+  <p>Are you sure you want to permanently delete
+     <strong><?= htmlspecialchars($p['title']) ?></strong> and all its related data?</p>
+  <form method="post" style="margin-top:20px">
+    <button type="submit" class="btn" style="background:#ef4444">Yes, Delete</button>
+    <a href="index.php?route=projects.view&id=<?= (int)$id ?>" class="btn">Cancel</a>
+  </form>
+  <?php
+  $content = ob_get_clean();
+  $title = 'Delete Project';
+  require __DIR__ . '/../Views/layout.php';
+  exit;
+}
+
 /** PROJECT OVERVIEW */
 if ($route === 'projects.view') {
   $id = (int)($_GET['id'] ?? 0);
-
+  
   // Sidebar
   $projects = fetch_sidebar_projects($pdo, $uid);
 
@@ -165,6 +193,8 @@ if ($route === 'projects.view') {
     <?= !empty($p['course_code']) && !empty($p['description']) ? '•' : '' ?>
     <?= htmlspecialchars($p['description'] ?? '') ?>
   </p>
+  <a class="btn-sm" href="index.php?route=projects.delete&id=<?= (int)$p['id'] ?>" style="color:#f87171">Delete</a>
+
 
   <style>
     .grid { display:grid; grid-template-columns: repeat(auto-fit,minmax(280px,1fr)); gap:16px; margin-top:14px; }

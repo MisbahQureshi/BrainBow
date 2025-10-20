@@ -91,6 +91,7 @@ switch ($route) {
 
     case 'projects.new':
     case 'projects.view':
+    case 'projects.delete':
         require __DIR__ . '/../app/Controllers/ProjectsController.php';
         break;
 
