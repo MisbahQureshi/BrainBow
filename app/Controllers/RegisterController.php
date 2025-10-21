@@ -278,7 +278,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
 
             <div class="illus" aria-hidden="true">
-                <p>Everything you need to plan school and life — in one place.</p>
+                <p>Everything you need to plan school and life, in one place.</p>
             </div>
         </div>
         <footer>© <?= date('Y') ?> BrainBow — All rights reserved.</footer>

@@ -302,7 +302,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="grid">
       <!-- Left: Login card -->
       <div class="card">
-        <h2>Welcome back</h2>
+        <h2>Welcome, let's organize your mind out</h2>
         <div class="muted">Sign in to continue to your dashboard.</div>
 
         <form method="post" autocomplete="on" novalidate>
@@ -344,8 +344,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <!-- Right: Hero/illustration pane (optional copy) -->
       <div class="illus" aria-hidden="true">
         <p>
-          Organize projects, to-dos, notes, mind maps and a calendar — all in one place.<br>
-          Tip: Press <span class="kbd">/</span> anywhere to quick-search.
+          Organize projects, to-dos, notes, mind maps and a calendar<br>all in one place.
         </p>
       </div>
     </div>
