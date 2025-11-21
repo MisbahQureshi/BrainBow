@@ -97,13 +97,31 @@ $topEvents = $pdo->query("
   LIMIT 5
 ")->fetchAll();
 
+$lastVisitTs = $_SESSION['last_visit'] ?? null;
+$lastVisitFormatted = null;
+if (!empty($lastVisitTs)) {
+  $lastVisitFormatted = date('Y-m-d H:i:s', (int) $lastVisitTs);
+}
 /** render */
 ob_start();
 ?>
-<div class="topbar">
+<!-- <div class="topbar">
   <h1 style="margin:0">Dashboard</h1>
   <div class="muted">Hello, <?= htmlspecialchars($_SESSION['name'] ?? 'Student') ?></div>
+</div> -->
+
+<div class="topbar">
+  <h1 style="margin:0">Dashboard</h1>
+  <div class="muted">
+    Hello, <?= htmlspecialchars($_SESSION['name'] ?? 'Student') ?>
+    <?php if (!empty($lastVisitFormatted)): ?>
+      · Last visit: <?= htmlspecialchars($lastVisitFormatted) ?>
+    <?php else: ?>
+      · Welcome! This looks like your first visit.
+    <?php endif; ?>
+  </div>
 </div>
+
 
 <div class="grid">
   <div class="card">
