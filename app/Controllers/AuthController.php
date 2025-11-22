@@ -33,6 +33,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       $pdo->prepare("UPDATE users SET login_count = login_count + 1 WHERE id = ?")
         ->execute([$user['id']]);
 
+      $pdo->prepare("UPDATE users SET last_login_at = NOW() WHERE id = ?")
+        ->execute([$user['id']]);
+
+
       // Read last visit cookie (if any) and store it in the session
       $lastVisit = $_COOKIE['last_visit'] ?? null;
       $_SESSION['last_visit'] = $lastVisit;
