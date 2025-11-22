@@ -14,15 +14,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->execute([$email]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    // if ($user && password_verify($password, $user['password_hash'])) {
-    //   session_regenerate_id(true);
-    //   $_SESSION['user_id'] = (int) $user['id'];
-    //   $_SESSION['name'] = $user['name'];
-    //   $_SESSION['role'] = $user['role'];
-    //   header('Location: index.php?route=dashboard');
-    //   exit;
-    // }
-
     if ($user && password_verify($password, $user['password_hash'])) {
       session_regenerate_id(true);
       $_SESSION['user_id'] = (int) $user['id'];
@@ -76,7 +67,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       --muted: #9aa3b2;
       --border: #232842;
       --accent: #7c5cff;
-      /* close to your #6c5ce7 */
       --accent-2: #5a47ff;
       --danger: #f87171;
       --shadow: 0 10px 30px rgba(0, 0, 0, .35);
@@ -376,7 +366,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div> -->
       </div>
 
-      <!-- Right: Hero/illustration pane (optional copy) -->
       <div class="illus" aria-hidden="true">
         <p>
           Organize projects, to-dos, notes, mind maps and a calendar<br>all in one place.

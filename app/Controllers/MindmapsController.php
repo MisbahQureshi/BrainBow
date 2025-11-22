@@ -98,7 +98,7 @@ if ($route === 'mindmaps.list') {
   exit;
 }
 
-/** NEW (editor) */
+/** NEW */
 if ($route === 'mindmaps.new') {
   if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $project_id = (int)($_POST['project_id'] ?? 0);
@@ -133,7 +133,7 @@ if ($route === 'mindmaps.new') {
   goto render_mm_editor;
 }
 
-/** VIEW (renders nodes + links) */
+/** VIEW */
 if ($route === 'mindmaps.view') {
   $id = (int)($_GET['id'] ?? 0);
   $mm = ensure_mm_owner($pdo, $id, $uid);
@@ -197,7 +197,7 @@ if ($route === 'mindmaps.view') {
   exit;
 }
 
-/** EDIT (editor) */
+/** EDIT */
 if ($route === 'mindmaps.edit') {
   $id = (int)($_GET['id'] ?? 0);
   $mm = ensure_mm_owner($pdo, $id, $uid);

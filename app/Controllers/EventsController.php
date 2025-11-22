@@ -104,13 +104,13 @@ if ($route === 'events.calendar') {
   $year  = isset($_GET['year'])  ? max(1970, (int)$_GET['year'])  : (int)date('Y');
   $month = isset($_GET['month']) ? min(12, max(1, (int)$_GET['month'])) : (int)date('n');
 
-  // Compute grid range (Sunday-start, 6 rows)
+  // Compute grid range 
   $firstOfMonth = new DateTimeImmutable(sprintf('%04d-%02d-01', $year, $month));
   $startDow = (int)$firstOfMonth->format('w'); // 0=Sun
   $gridStart = $firstOfMonth->modify("-{$startDow} days");
   $gridEnd   = $gridStart->modify('+41 days'); // 6 weeks (42 cells) inclusive
 
-  // Query events in range
+  // Query events
   $sql = "
     SELECT e.id, e.title, e.start_datetime, e.end_datetime, e.all_day, e.location,
            e.project_id, p.title AS project, p.color

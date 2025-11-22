@@ -11,7 +11,7 @@ $pdo = getDB();
 $uid = (int) $_SESSION['user_id'];
 $route = $_GET['route'] ?? 'notes.list';
 
-/** Sidebar projects for layout */
+/** Sidebar projects */
 $projStmt = $pdo->prepare("
   SELECT id, title AS name, color
   FROM projects
@@ -217,7 +217,7 @@ if ($route === 'notes.edit') {
 /** DELETE */
 if ($route === 'notes.delete') {
   $id = (int) ($_GET['id'] ?? 0);
-  // Ensure ownership before delete
+  // check before delete
   $chk = $pdo->prepare("SELECT id FROM notes WHERE id=? AND created_by=?");
   $chk->execute([$id, $uid]);
   if ($chk->fetch()) {
@@ -228,7 +228,7 @@ if ($route === 'notes.delete') {
   exit;
 }
 
-/** PIN / UNPIN */
+/** PIN */
 if ($route === 'notes.pin') {
   $id = (int) ($_GET['id'] ?? 0);
   $note = ensure_note_owner($pdo, $id, $uid);
@@ -239,12 +239,11 @@ if ($route === 'notes.pin') {
   exit;
 }
 
-/** SEARCH (FULLTEXT) */
+/** SEARCH */
 if ($route === 'notes.search') {
   $q = trim($_GET['q'] ?? '');
   $notes = [];
   if ($q !== '') {
-    // Prefer FULLTEXT
     $stmt = $pdo->prepare("
       SELECT n.id, n.title, n.is_pinned, n.updated_at, p.title AS project,
              MATCH(n.title, n.content) AGAINST (? IN NATURAL LANGUAGE MODE) AS score
@@ -258,7 +257,6 @@ if ($route === 'notes.search') {
       $stmt->execute([$q, $uid, $q]);
       $notes = $stmt->fetchAll();
     } catch (PDOException $e) {
-      // Fallback to LIKE if FULLTEXT not available
       $like = '%' . $q . '%';
       $stmt = $pdo->prepare("
         SELECT n.id, n.title, n.is_pinned, n.updated_at, p.title AS project

@@ -36,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         try {
             $db = getDB();
 
-            // Check duplicate email (case-insensitive, no stray spaces)
+            // Check duplicate email
             $q = $db->prepare('SELECT 1 FROM users WHERE TRIM(LOWER(email)) = TRIM(LOWER(?)) LIMIT 1');
             $q->execute([$email]);
 
@@ -45,12 +45,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             } else {
                 $hash = password_hash($password, PASSWORD_DEFAULT);
 
-                // Your schema has role ENUM('admin','student'); default is 'student'
-                // Insert explicitly as 'student' to be crystal-clear.
                 $ins = $db->prepare('INSERT INTO users (name, email, password_hash, role) VALUES (?, ?, ?, ?)');
                 $ins->execute([$name, $email, $hash, 'student']);
 
-                // Auto-login
                 session_regenerate_id(true);
                 $_SESSION['user_id'] = (int) $db->lastInsertId();
                 $_SESSION['name'] = $name;
@@ -60,8 +57,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 exit;
             }
         } catch (Throwable $e) {
-            // While debugging you can expose/log it:
-            // error_log('[REGISTER] ' . $e->getMessage());
             $error = 'Something went wrong. Please try again.';
         }
     }

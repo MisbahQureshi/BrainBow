@@ -8,7 +8,7 @@ require_login();
 $pdo = getDB();
 $uid = (int) $_SESSION['user_id'];
 
-/** Sidebar projects (owned or member) */
+/** Sidebar projects */
 $projects = [];
 $projectsStmt = $pdo->prepare("
   SELECT p.id, p.title AS name, p.color

@@ -10,7 +10,7 @@ $uid = (int)($_SESSION['user_id'] ?? 0);
 
 $route = $_GET['route'] ?? 'projects.new';
 
-/** Helper: ensure project exists and is owned by current user */
+/** check if project exists and is owned by current user */
 function ensure_project_owner(PDO $pdo, int $projectId, int $uid): array {
   $stmt = $pdo->prepare("SELECT id, title, color, description, course_code, created_at, updated_at
                          FROM projects
@@ -22,7 +22,7 @@ function ensure_project_owner(PDO $pdo, int $projectId, int $uid): array {
   return $proj;
 }
 
-/** Fetch sidebar projects (recent) */
+/** Fetch sidebar projects*/
 function fetch_sidebar_projects(PDO $pdo, int $uid): array {
   $stmt = $pdo->prepare("SELECT id, title AS name, color
                          FROM projects
@@ -36,9 +36,7 @@ function fetch_sidebar_projects(PDO $pdo, int $uid): array {
 /** CREATE PROJECT */
 if ($route === 'projects.new') {
   if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // If you use CSRF elsewhere, uncomment the next line and add a hidden input named 'csrf'
-    // verify_csrf();
-
+    
     $title = trim((string)($_POST['title'] ?? ''));
     $color = trim((string)($_POST['color'] ?? '#6c5ce7'));
 
@@ -76,7 +74,7 @@ if ($route === 'projects.new') {
 /** DELETE PROJECT */
 if ($route === 'projects.delete') {
   $id = (int)($_GET['id'] ?? 0);
-  $p = ensure_project_owner($pdo, $id, $uid); // verify ownership
+  $p = ensure_project_owner($pdo, $id, $uid); // verify
 
   if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt = $pdo->prepare("DELETE FROM projects WHERE id=? AND owner_id=?");
@@ -105,13 +103,10 @@ if ($route === 'projects.delete') {
 if ($route === 'projects.view') {
   $id = (int)($_GET['id'] ?? 0);
   
-  // Sidebar
   $projects = fetch_sidebar_projects($pdo, $uid);
 
-  // Ensure the project belongs to the current user
   $p = ensure_project_owner($pdo, $id, $uid);
 
-  // Gather related data for overview (latest items per section)
   // TODOS
   $todos = $pdo->prepare("
     SELECT id, title, status, priority, due_date, updated_at

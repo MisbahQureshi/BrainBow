@@ -10,7 +10,7 @@ $pdo = getDB();
 $uid = (int) $_SESSION['user_id'];
 $route = $_GET['route'] ?? 'todos.list';
 
-// Sidebar projects for layout
+// Sidebar projects
 $projects = $pdo->prepare("SELECT id, title AS name, color FROM projects WHERE owner_id=? ORDER BY created_at DESC LIMIT 50");
 $projects->execute([$uid]);
 $projects = $projects->fetchAll();

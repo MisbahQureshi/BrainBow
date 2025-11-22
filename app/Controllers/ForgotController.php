@@ -8,8 +8,6 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
     session_start();
 }
 
-// We allow reset even if logged in, but you could redirect to a change-password page.
-
 $error = null;
 $success = null;
 $email = '';
@@ -31,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         try {
             $db = getDB();
 
-            // Find account by email (case-insensitive)
+            // Find email
             $q = $db->prepare('SELECT id FROM users WHERE TRIM(LOWER(email)) = TRIM(LOWER(?)) LIMIT 1');
             $q->execute([$email]);
             $user = $q->fetch(PDO::FETCH_ASSOC);
