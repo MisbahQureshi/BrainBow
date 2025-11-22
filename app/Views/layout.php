@@ -206,6 +206,24 @@
             <?= $content ?>
         </main>
     </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script>
+        $(function () {
+            $(".btn").hover(
+                function () { $(this).css("background-color", "#583acf"); },
+                function () { $(this).css("background-color", ""); }
+            );
+
+            $(".btn").on("mousedown", function () {
+                $(this).css("transform", "scale(0.98)");
+            }).on("mouseup mouseleave", function () {
+                $(this).css("transform", "");
+            });
+        });
+    </script>
+
 </body>
 
 </html>
