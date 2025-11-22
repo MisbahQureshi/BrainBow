@@ -28,27 +28,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       $_SESSION['user_id'] = (int) $user['id'];
       $_SESSION['name'] = $user['name'];
       $_SESSION['role'] = $user['role'];
-    
+
+      $pdo = getDB();
+      $pdo->prepare("UPDATE users SET login_count = login_count + 1 WHERE id = ?")
+        ->execute([$user['id']]);
+
       // Read last visit cookie (if any) and store it in the session
       $lastVisit = $_COOKIE['last_visit'] ?? null;
       $_SESSION['last_visit'] = $lastVisit;
-    
+
       // Update the last_visit cookie with the current timestamp
       setcookie(
         'last_visit',
         (string) time(),
         [
-          'expires'  => time() + (86400 * 30), // 30 days
-          'path'     => '/',
-          'secure'   => isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on',
+          'expires' => time() + (86400 * 30), // 30 days
+          'path' => '/',
+          'secure' => isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on',
           'httponly' => true,
           'samesite' => 'Lax',
         ]
       );
-    
+
       header('Location: index.php?route=dashboard');
       exit;
-    }    
+    }
   }
   $error = 'Invalid email or password';
 }
