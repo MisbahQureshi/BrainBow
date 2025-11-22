@@ -99,16 +99,15 @@ $topEvents = $pdo->query("
 
 $lastVisitTs = $_SESSION['last_visit'] ?? null;
 $lastVisitFormatted = null;
+
 if (!empty($lastVisitTs)) {
-  $lastVisitFormatted = date('Y-m-d H:i:s', (int) $lastVisitTs);
+    $dt = new DateTime('@' . (int)$lastVisitTs);  
+    $dt->setTimezone(new DateTimeZone('America/Chicago'));
+    $lastVisitFormatted = $dt->format('Y-m-d g:i A'); // Customize format if you want
 }
 /** render */
 ob_start();
 ?>
-<!-- <div class="topbar">
-  <h1 style="margin:0">Dashboard</h1>
-  <div class="muted">Hello, <?= htmlspecialchars($_SESSION['name'] ?? 'Student') ?></div>
-</div> -->
 
 <div class="topbar">
   <h1 style="margin:0">Dashboard</h1>
