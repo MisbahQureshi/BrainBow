@@ -213,7 +213,7 @@ ob_start();
 </div>
 
 <?php if (($_SESSION['role'] ?? '') !== 'admin'): ?>
-  <div class="card" style="border-color:#f87171">
+  <div class="card" style="border-color:#f87171; margin-top: 20px;">
     <h3 style="color:#f87171">Danger zone</h3>
     <p class="muted">
       Once you delete your account, all your projects, notes, to-dos, and mind maps will be permanently removed.
