@@ -280,7 +280,7 @@ if ($route === 'mindmaps.edit') {
 
       function uid(){ return 'n' + Math.random().toString(36).slice(2,8); }
 
-      // ------- Selection helpers -------
+      // Selection helpers
       let selected = [];
       function clearSelection(){
         selected.forEach(e=>e.classList.remove('sel'));

@@ -217,7 +217,6 @@ if ($route === 'notes.edit') {
 /** DELETE */
 if ($route === 'notes.delete') {
   $id = (int) ($_GET['id'] ?? 0);
-  // check before delete
   $chk = $pdo->prepare("SELECT id FROM notes WHERE id=? AND created_by=?");
   $chk->execute([$id, $uid]);
   if ($chk->fetch()) {

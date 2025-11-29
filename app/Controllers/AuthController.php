@@ -28,16 +28,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ->execute([$user['id']]);
 
 
-      // Read last visit cookie (if any) and store it in the session
+      // last visit cookie store in session
       $lastVisit = $_COOKIE['last_visit'] ?? null;
       $_SESSION['last_visit'] = $lastVisit;
 
-      // Update the last_visit cookie with the current timestamp
+      // cookie current timestamp
       setcookie(
         'last_visit',
         (string) time(),
         [
-          'expires' => time() + (86400 * 30), // 30 days
+          'expires' => time() + (86400 * 30),
           'path' => '/',
           'secure' => isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on',
           'httponly' => true,
@@ -325,7 +325,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
 
     <div class="grid">
-      <!-- Left: Login card -->
+      <!-- Login -->
       <div class="card">
         <h2>Welcome, let's organize your mind out</h2>
         <div class="muted">Sign in to continue to your dashboard.</div>

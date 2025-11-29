@@ -11,7 +11,7 @@ $pdo   = getDB();
 $uid   = (int)$_SESSION['user_id'];
 $route = $_GET['route'] ?? 'whiteboards.list';
 
-/** Sidebar projects for layout */
+/** Sidebar projects*/
 $projStmt = $pdo->prepare("SELECT id, title AS name, color FROM projects WHERE owner_id=? AND is_archived=0 ORDER BY created_at DESC LIMIT 100");
 $projStmt->execute([$uid]);
 $projects = $projStmt->fetchAll();
@@ -82,7 +82,7 @@ if ($route === 'whiteboards.list') {
   exit;
 }
 
-/** NEW (editor) */
+/** NEW */
 if ($route === 'whiteboards.new') {
   if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $project_id = (int)($_POST['project_id'] ?? 0);
@@ -158,7 +158,7 @@ if ($route === 'whiteboards.view') {
   exit;
 }
 
-/** EDIT (editor) */
+/** EDIT */
 if ($route === 'whiteboards.edit') {
   $id = (int)($_GET['id'] ?? 0);
   $wb = ensure_wb_owner($pdo, $id, $uid);

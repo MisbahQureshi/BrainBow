@@ -3,12 +3,11 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../Lib/db.php';
 
-// Safe session start (your router/middleware may already start it)
 if (session_status() !== PHP_SESSION_ACTIVE) {
     session_start();
 }
 
-// If already logged in, go to dashboard
+// If logged in, go to dashboard
 if (!empty($_SESSION['user_id'])) {
     header('Location: index.php?route=dashboard');
     exit;

@@ -11,7 +11,7 @@ $pdo = getDB();
 $uid = (int)($_SESSION['user_id'] ?? 0);
 $route = $_GET['route'] ?? 'events.list';
 
-/** Sidebar projects for layout */
+/** Sidebar projects*/
 $projStmt = $pdo->prepare("
   SELECT id, title AS name, color
   FROM projects
@@ -36,7 +36,7 @@ function ensure_event_owner(PDO $pdo, int $eventId, int $uid): array {
   return $ev;
 }
 
-/** LIST (Upcoming grouped by date) */
+/** LIST of upcoming events */
 if ($route === 'events.list') {
   $stmt = $pdo->prepare("
     SELECT e.id, e.title, e.start_datetime, e.end_datetime, e.all_day,
@@ -50,7 +50,7 @@ if ($route === 'events.list') {
   $stmt->execute([$uid]);
   $events = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-  // group by date (Y-m-d)
+  // group by (Y-m-d)
   $groups = [];
   foreach ($events as $e) {
     $day = substr($e['start_datetime'], 0, 10);
@@ -97,20 +97,20 @@ if ($route === 'events.list') {
   exit;
 }
 
-/** CALENDAR (Monthly) */
+/** CALENDAR */
 if ($route === 'events.calendar') {
   // Inputs
   $projectFilter = (int)($_GET['project_id'] ?? 0);
   $year  = isset($_GET['year'])  ? max(1970, (int)$_GET['year'])  : (int)date('Y');
   $month = isset($_GET['month']) ? min(12, max(1, (int)$_GET['month'])) : (int)date('n');
 
-  // Compute grid range 
+  // grid 
   $firstOfMonth = new DateTimeImmutable(sprintf('%04d-%02d-01', $year, $month));
   $startDow = (int)$firstOfMonth->format('w'); // 0=Sun
   $gridStart = $firstOfMonth->modify("-{$startDow} days");
   $gridEnd   = $gridStart->modify('+41 days'); // 6 weeks (42 cells) inclusive
 
-  // Query events
+  // events
   $sql = "
     SELECT e.id, e.title, e.start_datetime, e.end_datetime, e.all_day, e.location,
            e.project_id, p.title AS project, p.color
@@ -134,7 +134,7 @@ if ($route === 'events.calendar') {
   $stmt->execute($params);
   $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-  // Bucket by date (Y-m-d)
+  // Bucket (Y-m-d)
   $byDay = [];
   foreach ($rows as $e) {
     $d = substr($e['start_datetime'], 0, 10);

@@ -129,7 +129,7 @@ if ($route === 'projects.view') {
   $notes->execute([$id, $uid]);
   $notes = $notes->fetchAll(PDO::FETCH_ASSOC);
 
-  // EVENTS (next upcoming first)
+  // EVENTS upcoming first
   $events = $pdo->prepare("
     SELECT id, title, start_datetime, end_datetime, location, all_day
     FROM events
@@ -162,7 +162,7 @@ if ($route === 'projects.view') {
   $whiteboards->execute([$id, $uid]);
   $whiteboards = $whiteboards->fetchAll(PDO::FETCH_ASSOC);
 
-  // Quick counts (for badges)
+  // Quick counts
   $countTodos = $pdo->prepare("SELECT COUNT(*) FROM todos WHERE project_id=? AND created_by=?");
   $countTodos->execute([$id, $uid]); $todoCount = (int)$countTodos->fetchColumn();
 
