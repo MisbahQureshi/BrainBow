@@ -101,9 +101,9 @@ $lastVisitTs = $_SESSION['last_visit'] ?? null;
 $lastVisitFormatted = null;
 
 if (!empty($lastVisitTs)) {
-    $dt = new DateTime('@' . (int)$lastVisitTs);  
-    $dt->setTimezone(new DateTimeZone('America/Chicago'));
-    $lastVisitFormatted = $dt->format('Y-m-d g:i A'); // Customize format if you want
+  $dt = new DateTime('@' . (int) $lastVisitTs);
+  $dt->setTimezone(new DateTimeZone('America/Chicago'));
+  $lastVisitFormatted = $dt->format('Y-m-d g:i A'); // Customize format if you want
 }
 /** render */
 ob_start();
@@ -208,7 +208,8 @@ ob_start();
     <h3>Stats</h3>
     <div class="muted">Open to-dos: <?= $counts['todos_open'] ?> • Notes: <?= $counts['notes'] ?> • Mind maps:
       <?= $counts['mindmaps'] ?> • Whiteboards: <?= $counts['whiteboards'] ?> • Today’s events:
-      <?= $counts['events_today'] ?></div>
+      <?= $counts['events_today'] ?>
+    </div>
   </div>
 </div>
 
@@ -220,7 +221,8 @@ ob_start();
     </p>
     <form action="index.php?route=user.delete" method="POST"
       onsubmit="return confirm('Are you sure you want to permanently delete your account? This action cannot be undone.');">
-      <button type="submit" class="btn" style="background:linear-gradient(180deg,#dc2626,#b91c1c);box-shadow:none;">
+      <button type="submit" id="delete-account-btn" class="btn"
+        style="background:linear-gradient(180deg,#dc2626,#b91c1c);box-shadow:none;">
         Delete My Account
       </button>
     </form>

@@ -144,6 +144,15 @@
             color: #fff;
             padding: 8px 12px;
             border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            text-align: center;
+            line-height: 1.5;
+            vertical-align: middle;
         }
 
         .see-more {
@@ -211,9 +220,14 @@
 
     <script>
         $(function () {
-            $(".btn").hover(
+            $(".btn:not(#delete-account-btn)").hover(
                 function () { $(this).css("background-color", "#583acf"); },
                 function () { $(this).css("background-color", ""); }
+            );
+
+            $("#delete-account-btn").hover(
+                function () { $(this).css("background", "linear-gradient(180deg, #b91c1c, #991b1b)"); },
+                function () { $(this).css("background", "linear-gradient(180deg, #dc2626, #b91c1c)"); }
             );
 
             $(".btn").on("mousedown", function () {
