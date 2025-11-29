@@ -64,7 +64,7 @@ if ($route === 'notes.list') {
     <?php foreach ($notes as $n): ?>
       <li>
         <a href="index.php?route=notes.view&id=<?= (int) $n['id'] ?>">
-          <?= $n['is_pinned'] ? '📌 ' : '' ?>    <?= htmlspecialchars($n['title']) ?>
+          <?= $n['is_pinned'] ? '📌 ' : '' ?>     <?= htmlspecialchars($n['title']) ?>
         </a>
         <div class="muted">
           <?= htmlspecialchars($n['project']) ?> • updated <?= htmlspecialchars($n['updated_at']) ?>
@@ -75,6 +75,21 @@ if ($route === 'notes.list') {
       <li class="muted">No notes yet.</li>
     <?php endif; ?>
   </ul>
+  <script>
+    const searchInput = document.querySelector('input[name="q"]');
+    const resultsList = document.querySelector('ul.list');
+    let debounceTimer;
+
+    searchInput.addEventListener('input', function () {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => {
+        const q = this.value;
+        fetch('index.php?route=notes.search&ajax=1&q=' + encodeURIComponent(q))
+          .then(r => r.text())
+          .then(html => resultsList.innerHTML = html);
+      }, 300);
+    });
+  </script>
   <?php
   $content = ob_get_clean();
   $title = 'Notes';
@@ -138,7 +153,8 @@ if ($route === 'notes.view') {
   ob_start(); ?>
   <h2><?= htmlspecialchars($note['title']) ?></h2>
   <p class="muted">Project: <?= htmlspecialchars($note['project_title']) ?> • Updated:
-    <?= htmlspecialchars($note['updated_at']) ?>   <?= $note['is_pinned'] ? '• 📌 Pinned' : '' ?></p>
+    <?= htmlspecialchars($note['updated_at']) ?>   <?= $note['is_pinned'] ? '• 📌 Pinned' : '' ?>
+  </p>
   <div style="white-space:pre-wrap; line-height:1.5"><?= htmlspecialchars($note['content']) ?></div>
   <p style="margin-top:12px">
   <form method="post" action="index.php?route=notes.pin&id=<?= (int) $note['id'] ?>" style="display:inline">
@@ -241,33 +257,48 @@ if ($route === 'notes.pin') {
 /** SEARCH */
 if ($route === 'notes.search') {
   $q = trim($_GET['q'] ?? '');
+  $isAjax = isset($_GET['ajax']);
   $notes = [];
+
   if ($q !== '') {
+    $like = '%' . $q . '%';
     $stmt = $pdo->prepare("
-      SELECT n.id, n.title, n.is_pinned, n.updated_at, p.title AS project,
-             MATCH(n.title, n.content) AGAINST (? IN NATURAL LANGUAGE MODE) AS score
+      SELECT n.id, n.title, n.is_pinned, n.updated_at, p.title AS project
       FROM notes n
       JOIN projects p ON p.id = n.project_id
-      WHERE n.created_by = ? AND MATCH(n.title, n.content) AGAINST (? IN NATURAL LANGUAGE MODE)
-      ORDER BY score DESC, n.updated_at DESC
+      WHERE n.created_by = ? AND (n.title LIKE ? OR n.content LIKE ?)
+      ORDER BY n.updated_at DESC
       LIMIT 100
     ");
-    try {
-      $stmt->execute([$q, $uid, $q]);
-      $notes = $stmt->fetchAll();
-    } catch (PDOException $e) {
-      $like = '%' . $q . '%';
-      $stmt = $pdo->prepare("
-        SELECT n.id, n.title, n.is_pinned, n.updated_at, p.title AS project
-        FROM notes n
-        JOIN projects p ON p.id = n.project_id
-        WHERE n.created_by = ? AND (n.title LIKE ? OR n.content LIKE ?)
-        ORDER BY n.updated_at DESC
-        LIMIT 100
-      ");
-      $stmt->execute([$uid, $like, $like]);
-      $notes = $stmt->fetchAll();
-    }
+    $stmt->execute([$uid, $like, $like]);
+    $notes = $stmt->fetchAll();
+  } else {
+    // fetch all notes
+    $stmt = $pdo->prepare("
+      SELECT n.id, n.title, n.is_pinned, n.updated_at,
+             p.title AS project
+      FROM notes n
+      JOIN projects p ON p.id = n.project_id
+      WHERE n.created_by = ?
+      ORDER BY n.is_pinned DESC, n.updated_at DESC, n.id DESC
+    ");
+    $stmt->execute([$uid]);
+    $notes = $stmt->fetchAll();
+  }
+
+  if ($isAjax) {
+    foreach ($notes as $n): ?>
+      <li>
+        <a href="index.php?route=notes.view&id=<?= (int) $n['id'] ?>">
+          <?= $n['is_pinned'] ? '📌 ' : '' ?>       <?= htmlspecialchars($n['title']) ?>
+        </a>
+        <div class="muted"><?= htmlspecialchars($n['project']) ?> • updated <?= htmlspecialchars($n['updated_at']) ?></div>
+      </li>
+    <?php endforeach;
+    if (!$notes): ?>
+      <li class="muted">No results.</li>
+    <?php endif;
+    exit;
   }
 
   ob_start(); ?>
@@ -280,17 +311,30 @@ if ($route === 'notes.search') {
     <?php foreach ($notes as $n): ?>
       <li>
         <a href="index.php?route=notes.view&id=<?= (int) $n['id'] ?>">
-          <?= $n['is_pinned'] ? '📌 ' : '' ?>    <?= htmlspecialchars($n['title']) ?>
+          <?= $n['is_pinned'] ? '📌 ' : '' ?>     <?= htmlspecialchars($n['title']) ?>
         </a>
         <div class="muted"><?= htmlspecialchars($n['project']) ?> • updated <?= htmlspecialchars($n['updated_at']) ?></div>
       </li>
     <?php endforeach;
-    if ($q !== '' && !$notes): ?>
+    if (!$notes): ?>
       <li class="muted">No results.</li>
-    <?php elseif ($q === ''): ?>
-      <li class="muted">Type to search.</li>
     <?php endif; ?>
   </ul>
+  <script>
+    const searchInput = document.querySelector('input[name="q"]');
+    const resultsList = document.querySelector('ul.list');
+    let debounceTimer;
+
+    searchInput.addEventListener('input', function () {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => {
+        const q = this.value;
+        fetch('index.php?route=notes.search&ajax=1&q=' + encodeURIComponent(q))
+          .then(r => r.text())
+          .then(html => resultsList.innerHTML = html);
+      }, 300);
+    });
+  </script>
   <?php
   $content = ob_get_clean();
   $title = 'Search Notes';
