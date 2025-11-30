@@ -31,7 +31,7 @@ switch ($route) {
     case 'register':
         require __DIR__ . '/../app/Controllers/RegisterController.php';
         break;
-        
+
     case 'forgot':
         require __DIR__ . '/../app/Controllers/ForgotController.php';
         break;
@@ -41,8 +41,26 @@ switch ($route) {
         break;
 
     case 'logout':
-        session_unset();
+        // Unset all session values
+        $_SESSION = [];
+
+        // Delete the session cookie
+        if (ini_get("session.use_cookies")) {
+            $params = session_get_cookie_params();
+            setcookie(
+                session_name(),
+                '',
+                time() - 42000,
+                $params["path"],
+                $params["domain"],
+                $params["secure"],
+                $params["httponly"]
+            );
+        }
+
+        // Destroy the session
         session_destroy();
+
         header('Location: index.php?route=login');
         break;
 
