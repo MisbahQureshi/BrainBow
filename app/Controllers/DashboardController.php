@@ -103,7 +103,7 @@ $lastVisitFormatted = null;
 if (!empty($lastVisitTs)) {
   $dt = new DateTime('@' . (int) $lastVisitTs);
   $dt->setTimezone(new DateTimeZone('America/Chicago'));
-  $lastVisitFormatted = $dt->format('Y-m-d g:i A'); // Customize format if you want
+  $lastVisitFormatted = $dt->format('Y-m-d g:i A');
 }
 /** render */
 ob_start();
