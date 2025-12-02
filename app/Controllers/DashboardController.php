@@ -97,14 +97,6 @@ $topEvents = $pdo->query("
   LIMIT 5
 ")->fetchAll();
 
-$lastVisitTs = $_SESSION['last_visit'] ?? null;
-$lastVisitFormatted = null;
-
-if (!empty($lastVisitTs)) {
-  $dt = new DateTime('@' . (int) $lastVisitTs);
-  $dt->setTimezone(new DateTimeZone('America/Chicago'));
-  $lastVisitFormatted = $dt->format('Y-m-d g:i A');
-}
 /** render */
 ob_start();
 ?>
@@ -113,11 +105,6 @@ ob_start();
   <h1 style="margin:0">Dashboard</h1>
   <div class="muted">
     Hello, <?= htmlspecialchars($_SESSION['name'] ?? 'Student') ?>
-    <?php if (!empty($lastVisitFormatted)): ?>
-      · Last visit: <?= htmlspecialchars($lastVisitFormatted) ?>
-    <?php else: ?>
-      · Welcome! This looks like your first visit.
-    <?php endif; ?>
   </div>
 </div>
 

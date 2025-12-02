@@ -209,6 +209,12 @@
             <div class="nav">
                 <a href="index.php?route=logout">Logout</a>
             </div>
+            <?php if (!empty($_SESSION['last_visit'])): ?>
+                <div style="margin-top: 16px; font-size: 11px; color: var(--muted);">
+                    Last visit:<br>
+                    <?= date('M j, Y g:i A', (int) $_SESSION['last_visit']) ?>
+                </div>
+            <?php endif; ?>
         </aside>
 
         <main class="main">

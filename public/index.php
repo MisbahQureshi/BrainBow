@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 session_start();
+date_default_timezone_set('America/Chicago');
 
 require __DIR__ . '/../vendor/autoload.php';
 
